@@ -38,6 +38,7 @@
     "@backstage/plugin-search-backend-module-techdocs": "^0.1.23",
     "@backstage/plugin-search-backend-node": "^1.2.22",
     "@backstage/plugin-techdocs-backend": "^1.10.5",
+    "@jiteshy/backstage-plugin-synergy-backend": "^0.1.0",
     "app": "link:../app",
     "better-sqlite3": "^9.0.0",
     "dockerode": "^3.3.1",
