@@ -84,6 +84,8 @@ type RepositoryIssueAuthor = {
 };
 
 type RepositoryIssue = {
+  id: string;
+  url: string;
   author: RepositoryIssueAuthor;
   title: string;
   body: string;
@@ -95,10 +97,18 @@ type RepositoryIssues = {
   nodes: RepositoryIssue[];
 };
 
+type RepositoryPinnedIssue = {
+  issue: RepositoryIssue
+}
+
+type RepositoryPinnedIssues = {
+  nodes: RepositoryPinnedIssue[];
+};
+
 type RepositoryDetails = Repository & {
   readme: RepositoryReadme;
   issues: RepositoryIssues;
-  pinnedIssues: RepositoryIssues;
+  pinnedIssues: RepositoryPinnedIssues;
 };
 
 type ProjectsQueryResponse = {
@@ -221,6 +231,8 @@ export async function githubProviderImpl({
             issues (first: 100, orderBy: {field: UPDATED_AT, direction: DESC}) {
               nodes {
                 ... on Issue {
+                  id
+                  url
                   author {
                     login
                     url
@@ -237,6 +249,8 @@ export async function githubProviderImpl({
               nodes {
                 ... on PinnedIssue {
                   issue {
+                    id
+                    url
                     author {
                       login
                       url
@@ -267,7 +281,7 @@ export async function githubProviderImpl({
         ...formatProject(repo, repoTag),
         readme: repo.readme.text,
         issues: repo.issues.nodes,
-        pinnedIssues: repo.pinnedIssues.nodes,
+        pinnedIssues: repo.pinnedIssues.nodes.map(pinned => pinned.issue),
       };
     },
   };

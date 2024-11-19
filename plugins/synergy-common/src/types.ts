@@ -30,12 +30,18 @@ export type ProjectIssueAuthor = {
 };
 
 export type ProjectIssue = {
+  id: string;
+  url: string;
   author: ProjectIssueAuthor;
   title: string;
   body: string;
   createdAt: string;
   updatedAt: string;
 };
+
+export type ProjectPinnedIssue = {
+  issue: ProjectIssue
+}
 
 export type ProjectDetails = Project & {
   readme: string;

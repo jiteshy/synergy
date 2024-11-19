@@ -40,8 +40,6 @@ export class SynergyClient implements SynergyApi {
       });
     }
 
-    console.log(`URL hit: ${url.toString()}`);
-
     const response = await this.fetchApi.fetch(url.toString());
 
     if (!response.ok) {

@@ -12,10 +12,11 @@ import { useRouteRef } from '@backstage/core-plugin-api';
 import { projectRouteRef } from '../../routes';
 import { LinkButton } from '@backstage/core-components';
 
-const useStyles = makeStyles<Theme>((theme) => ({
+const useStyles = makeStyles<Theme>(theme => ({
   card: {
     borderRadius: '10px',
-    boxShadow: 'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;',
+    boxShadow:
+      'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;',
     transition: '0.3s',
     color: theme.palette.grey[400],
   },
@@ -25,7 +26,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottom: '1px solid ' + theme.palette.border,
-    color: theme.palette.grey[700]
+    color: theme.palette.grey[700],
   },
   title: {
     color: theme.palette.grey[900],
@@ -72,7 +73,7 @@ const useStyles = makeStyles<Theme>((theme) => ({
     display: 'flex',
     alignItems: 'center',
     fontSize: '20px',
-    color: theme.palette.primary.light
+    color: theme.palette.primary.light,
   },
   footerCounts: {
     fontSize: '20px',
@@ -81,7 +82,13 @@ const useStyles = makeStyles<Theme>((theme) => ({
   },
 }));
 
-export const ProjectCard = ({ project }: { project: Project }) => {
+export const ProjectCard = ({
+  project,
+  hideMore,
+}: {
+  project: Project;
+  hideMore?: boolean;
+}) => {
   const styles = useStyles();
   const projectRoute = useRouteRef(projectRouteRef);
 
@@ -143,17 +150,19 @@ export const ProjectCard = ({ project }: { project: Project }) => {
                     {project.contributionsCount}
                   </span>
                 </div>
-                <LinkButton to={projectRoute({
-                  owner: project.owner,
-                  project: project.name
-                })} color="primary" variant="outlined">
-                  More
-                </LinkButton>
+                {!hideMore && (
+                  <LinkButton
+                    to={projectRoute({
+                      owner: project.owner,
+                      project: project.name,
+                    })}
+                    color="primary"
+                    variant="outlined"
+                  >
+                    More
+                  </LinkButton>
+                )}
               </div>
-              {/* <MarkdownContent
-                  className={styles.markdown}
-                  content={project.description ?? 'No description'}
-                /> */}
             </Box>
           </Grid>
         </Grid>
