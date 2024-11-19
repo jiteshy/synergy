@@ -3,10 +3,10 @@ import { DataProviderConfig } from './configReader';
 import { SingleInstanceGithubCredentialsProvider } from '@backstage/integration';
 import {
   Project,
-  DataProviderImpl,
   ProjectDetails,
   Contributors,
-} from './types';
+  SynergyApi,
+} from '@jiteshy/backstage-plugin-synergy-common';
 
 type TopicNode = {
   topic: {
@@ -52,13 +52,21 @@ type RepositoryPullRequest = {
   nodes: RepositoryPullRequestNode[];
 };
 
+type RepositoryPrimaryLanguage = {
+  name: string;
+};
+
 type Repository = {
+  id: string;
   name: string;
   description: string;
   url: string;
   visibility: string;
+  isPrivate: boolean;
   owner: RepositoryOwner;
+  updatedAt: string;
   defaultBranchRef: RepositoryBranchRef;
+  primaryLanguage: RepositoryPrimaryLanguage;
   languages: RepositoryLanguages;
   repositoryTopics: RepositoryTopics;
   stargazerCount: number;
@@ -94,10 +102,8 @@ type RepositoryDetails = Repository & {
 };
 
 type ProjectsQueryResponse = {
-  repositoryOwner: {
-    repositories: {
-      nodes: Repository[];
-    };
+  search: {
+    nodes: Repository[];
   };
 };
 
@@ -106,12 +112,18 @@ type ProjectQueryResponse = {
 };
 
 const GITHUB_REPO_QUERY_BASE_FIELDS = `
+  id
   name
   description
   url
   visibility
+  isPrivate
+  updatedAt
   owner {
     login
+  }
+  primaryLanguage {
+    name
   }
   defaultBranchRef {
     name
@@ -133,7 +145,11 @@ const GITHUB_REPO_QUERY_BASE_FIELDS = `
       }
     }
   }
-  pullRequests (states: MERGED, first: 100, orderBy: {field: UPDATED_AT, direction: DESC}) {
+  pullRequests (
+    states: MERGED,
+    first: 100,
+    orderBy: {field: UPDATED_AT, direction: DESC}
+  ) {
     totalCount
     nodes {
       author {
@@ -152,7 +168,7 @@ export async function githubProviderImpl({
   apiBaseUrl,
   token,
   repoTag,
-}: DataProviderConfig): Promise<DataProviderImpl> {
+}: DataProviderConfig): Promise<SynergyApi> {
   const githubCredentialsProvider =
     SingleInstanceGithubCredentialsProvider.create({ host, token });
   const orgUrl = `https://${host}/${org}`;
@@ -167,42 +183,32 @@ export async function githubProviderImpl({
   return {
     getProjects: async (): Promise<Project[]> => {
       const query = `
-        query repositories($org: String!, $cursor: String) {
-          repositoryOwner(login: $org) {
-            login
-            repositories(first: 100, after: $cursor, isArchived: false, orderBy: {field: NAME, direction: ASC}) {
-              nodes {
+        query repositories {
+          search(type: REPOSITORY, query: "org:${org} topic:${repoTag} fork:true archived:false", first: 100) {
+            nodes {
+              ... on Repository {
                 ${GITHUB_REPO_QUERY_BASE_FIELDS}
                 issues {
                   totalCount
                 }
               }
-              pageInfo {
-                hasNextPage
-                endCursor
-              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
             }
           }
         }`;
 
-      let cursor: string | undefined = undefined;
-      const response: ProjectsQueryResponse = await client(query, {
-        org,
-        cursor,
-      });
-
-      return response.repositoryOwner.repositories.nodes.reduce(
-        (filtered: Project[], repo: Repository): Project[] => {
-          const topics = repo.repositoryTopics.nodes.map(
-            (topicNode: TopicNode) => topicNode.topic.name,
+      const response: ProjectsQueryResponse = await client(query);
+      
+      return response.search.nodes
+        .map((repo: Repository) => formatProject(repo, repoTag))
+        .sort((p1: Project, p2: Project) => {
+          return (
+            new Date(p2.updatedAt).getTime() - new Date(p1.updatedAt).getTime()
           );
-          if (topics.includes(repoTag)) {
-            filtered.push(formatProject(repo, topics));
-          }
-          return filtered;
-        },
-        [],
-      );
+        });
     },
     getProject: async (
       name: string,
@@ -258,7 +264,7 @@ export async function githubProviderImpl({
 
       const repo = response.repository;
       return {
-        ...formatProject(repo),
+        ...formatProject(repo, repoTag),
         readme: repo.readme.text,
         issues: repo.issues.nodes,
         pinnedIssues: repo.pinnedIssues.nodes,
@@ -267,24 +273,30 @@ export async function githubProviderImpl({
   };
 }
 
-function formatProject(repo: Repository, topics?: string[]): Project {
+function formatProject(repo: Repository, repoTag: string): Project {
+  const topics: string[] = [];
+  repo.repositoryTopics?.nodes.forEach((topicNode: TopicNode) => {
+    if (topicNode.topic && topicNode.topic.name !== repoTag) {
+      topics.push(topicNode.topic.name.toLowerCase());
+    }
+  });
   return {
+    id: repo.id,
     name: repo.name,
     description: repo.description,
     url: repo.url,
     visibility: repo.visibility,
-    owner: repo.owner.login,
-    languages: repo.languages.nodes.map(
+    isPrivate: repo.isPrivate,
+    owner: repo.owner?.login,
+    updatedAt: new Date(repo.updatedAt).toDateString(),
+    primaryLanguage: repo.primaryLanguage?.name?.toLowerCase(),
+    languages: repo.languages?.nodes.map(
       (languageNode: LanguageNode) => languageNode.name,
     ),
-    topics:
-      topics ||
-      repo.repositoryTopics.nodes.map(
-        (topicNode: TopicNode) => topicNode.topic.name,
-      ),
+    topics: topics,
     starsCount: repo.stargazerCount,
     issuesCount: repo.issues.totalCount,
-    totalContributions: repo.pullRequests.totalCount,
+    contributionsCount: repo.pullRequests.totalCount,
     contributors: parseContributors(repo),
   };
 }

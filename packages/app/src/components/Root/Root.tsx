@@ -26,6 +26,7 @@ import {
 } from '@backstage/core-components';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import DeviceHubOutlined from '@material-ui/icons/DeviceHubOutlined';
 
 const useSidebarLogoStyles = makeStyles({
   root: {
@@ -69,6 +70,7 @@ export const Root = ({ children }: PropsWithChildren<{}>) => (
         <SidebarItem icon={ExtensionIcon} to="api-docs" text="APIs" />
         <SidebarItem icon={LibraryBooks} to="docs" text="Docs" />
         <SidebarItem icon={CreateComponentIcon} to="create" text="Create..." />
+        <SidebarItem icon={DeviceHubOutlined} to="synergy" text="Synergy" />
         {/* End global nav */}
         <SidebarDivider />
         <SidebarScrollWrapper>

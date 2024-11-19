@@ -1,0 +1,1 @@
+export { useSynergyApi } from './useSynergyApi';

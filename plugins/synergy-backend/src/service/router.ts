@@ -6,7 +6,7 @@ import { Request } from 'express'
 import { githubProviderImpl } from '../lib/github';
 import { Config } from '@backstage/config';
 import { DataProviderConfig, readConfig } from '../lib/configReader';
-import { Project, DataProviderImpl, ProjectDetails } from '../lib/types';
+import { Project, ProjectDetails, SynergyApi } from '@jiteshy/backstage-plugin-synergy-common';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -26,7 +26,7 @@ export async function createRouter(
   const providerConfig: DataProviderConfig = readConfig(config);
   const provider = providerConfig.provider;
 
-  let providerImpl: DataProviderImpl;
+  let providerImpl: SynergyApi;
   if (provider.toLowerCase() === 'github') {
     providerImpl = await githubProviderImpl(providerConfig);
   } else {

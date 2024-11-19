@@ -1,0 +1,1 @@
+export { SynergyPage } from './SynergyPage';

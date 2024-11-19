@@ -28,6 +28,7 @@
     "@backstage/backend-plugin-api": "^0.6.18",
     "@backstage/config": "^1.2.0",
     "@backstage/integration": "^1.11.0",
+    "@jiteshy/backstage-plugin-synergy-common": "^0.1.0",
     "@octokit/graphql": "^5.0.0",
     "@types/express": "*",
     "express": "^4.17.1",
