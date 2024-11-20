@@ -4,6 +4,7 @@ import {
   KeyValue,
   Project,
   ProjectDetails,
+  ProjectIssue,
   SynergyApi,
 } from '@jiteshy/backstage-plugin-synergy-common';
 
@@ -21,14 +22,17 @@ export class SynergyClient implements SynergyApi {
 
   getProjects(): Promise<Project[]> {
     const urlSegment = 'projects';
-
     return this.get<Project[]>(urlSegment);
   }
   getProject(name: string, owner: string): Promise<ProjectDetails> {
     const params = { name, owner };
     const urlSegment = 'project';
-
     return this.get<ProjectDetails>(urlSegment, params);
+  }
+
+  getIssues(): Promise<ProjectIssue[]> {
+    const urlSegment = 'issues';
+    return this.get<ProjectIssue[]>(urlSegment);
   }
 
   private async get<T>(path: string, params?: KeyValue): Promise<T> {

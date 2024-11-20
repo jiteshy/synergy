@@ -6,7 +6,7 @@ import { Request } from 'express'
 import { githubProviderImpl } from '../lib/github';
 import { Config } from '@backstage/config';
 import { DataProviderConfig, readConfig } from '../lib/configReader';
-import { Project, ProjectDetails, SynergyApi } from '@jiteshy/backstage-plugin-synergy-common';
+import { Project, ProjectDetails, ProjectIssue, SynergyApi } from '@jiteshy/backstage-plugin-synergy-common';
 
 export interface RouterOptions {
   logger: LoggerService;
@@ -56,6 +56,12 @@ export async function createRouter(
     } else {
       response.status(400).json('Bad request. Please pass name and owner for the project.');
     }
+  });
+
+  router.get('/issues', async (_, response) => {
+    logger.info(`Fetching inner source issues from ${provider}`);
+    const issues: ProjectIssue[] = await providerImpl.getIssues();
+    response.json(issues);
   });
 
   router.use(errorHandler());

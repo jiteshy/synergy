@@ -7,28 +7,11 @@ import {
 import { Project } from '@jiteshy/backstage-plugin-synergy-common';
 import { useSynergyApi } from '../../hooks';
 import { ProjectCard } from '../ProjectCard';
-import { makeStyles, Theme } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { Dropdown } from '../UI';
 import FilterListIcon from '@material-ui/icons/FilterList';
 
-const useStyles = makeStyles<Theme>(() => ({
-  filters: {
-    position: 'absolute',
-    right: '48px',
-    top: '8px',
-    display: 'flex',
-    gap: '0.5rem',
-    alignItems: 'center',
-    width: '10rem',
-    zIndex: 1,
-  },
-  filterIcon: {
-    marginTop: '16px',
-  },
-}));
-
 export const Projects = () => {
-  const classes = useStyles();
   const {
     value: projects,
     loading,
@@ -80,27 +63,39 @@ export const Projects = () => {
   }
 
   return (
-    <>
-      <div className={classes.filters}>
-        <FilterListIcon className={classes.filterIcon} fontSize="medium" />
-        <Dropdown
-          label="Category"
-          items={prepareCategories(projects)}
-          current={category}
-          handleSelect={filterByCategory}
-        />
-      </div>
-      {projects?.length ? (
-        <ItemCardGrid>
-          {(filteredProjects ? filteredProjects : projects).map(
-            (project: Project) => (
-              <ProjectCard key={project.id} project={project} />
-            ),
-          )}
-        </ItemCardGrid>
-      ) : (
-        <p>No Inner-Source projects found.</p>
-      )}
-    </>
+    <Grid container>
+      <Grid item xs={12} md={8} lg={10}>
+        <div>
+          <p>
+            Explore the inner-source projects in your organization, contribute,
+            and climb the leaderboard!
+          </p>
+        </div>
+      </Grid>
+      <Grid item xs={12} md={4} lg={2}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gridGap: '8px', marginTop: '-14px' }}>
+          <FilterListIcon fontSize="medium" style={{ marginTop: '20px' }} />
+          <Dropdown
+            label="Category"
+            items={prepareCategories(projects)}
+            current={category}
+            handleSelect={filterByCategory}
+          />
+        </Box>
+      </Grid>
+      <Grid item xs={12}>
+        {projects?.length ? (
+          <ItemCardGrid>
+            {(filteredProjects ? filteredProjects : projects).map(
+              (project: Project) => (
+                <ProjectCard key={project.id} project={project} />
+              ),
+            )}
+          </ItemCardGrid>
+        ) : (
+          <p>No Inner-Source projects found.</p>
+        )}
+      </Grid>
+    </Grid>
   );
 };

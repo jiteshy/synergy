@@ -8,17 +8,11 @@ import {
   ResponseErrorPanel,
   TabbedCard,
 } from '@backstage/core-components';
-import { Box, Card, Grid, makeStyles, Theme } from '@material-ui/core';
+import { Box, Card, Grid } from '@material-ui/core';
 import { ProjectCard } from '../ProjectCard';
 import { useRouteRefParams } from '@backstage/core-plugin-api';
 import { projectRouteRef } from '../../routes';
 import { IssuesList } from '../IssuesList';
-
-const useStyles = makeStyles<Theme>(theme => ({
-  infoCard: {
-    width: '100%',
-  },
-}));
 
 export const ProjectPage = () => {
   const tabStyles = {
@@ -27,7 +21,6 @@ export const ProjectPage = () => {
     marginTop: '14px',
     paddingBottom: '13px',
   };
-  const classes = useStyles();
   const { owner, project } = useRouteRefParams(projectRouteRef);
   const {
     value: projectData,
@@ -44,8 +37,8 @@ export const ProjectPage = () => {
   return (
     projectData && (
       <Card>
-        <Box sx={{ m: '1.5rem' }}>
-          <Grid container spacing={3} justifyContent="flex-start">
+        <Box sx={{ m: '1rem' }}>
+          <Grid container spacing={2} justifyContent="flex-start">
             <Grid item xs={12}>
               <Box
                 sx={{

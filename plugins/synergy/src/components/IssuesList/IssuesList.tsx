@@ -19,16 +19,10 @@ const useStyles = makeStyles<Theme>(theme => ({
     fontSize: theme.typography.pxToRem(15),
   },
   secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
+    fontSize: theme.typography.pxToRem(12),
     color: theme.palette.text.secondary,
-    alignItems: 'center',
   },
-  infoHeader: {
-    backgroundColor: theme.palette.grey['100'],
-    marginLeft: '10px',
-    marginRight: '10px',
-    paddingLeft: '16px !important',
-  },
+  infoHeader: {},
   primary: {
     color: theme.palette.primary.main,
   },
@@ -43,6 +37,14 @@ const useStyles = makeStyles<Theme>(theme => ({
   },
   navigateIcon: {
     paddingLeft: '4px',
+  },
+  accordionSummary: {
+    backgroundColor: theme.palette.grey['100'],
+    boxShadow: 'none',
+  },
+  accordionDetails: {
+    backgroundColor: theme.palette.secondary.contrastText,
+    marginTop: '0.5rem'
   },
 }));
 
@@ -61,13 +63,16 @@ export const IssuesList = ({ issues }: { issues: ProjectIssue[] }) => {
       expanded={expanded === issue.id}
       onChange={handleChange(issue.id)}
     >
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        className={classes.accordionSummary}
+      >
         <Typography className={classes.heading}>{issue.title}</Typography>
         {/* <Typography className={classes.secondaryHeading}>
           Updated On: {issue.updatedAt}
         </Typography> */}
       </AccordionSummary>
-      <AccordionDetails>
+      <AccordionDetails className={classes.accordionDetails}>
         <Grid container>
           <Grid item xs={12} className={classes.infoHeader}>
             <Box
@@ -75,6 +80,7 @@ export const IssuesList = ({ issues }: { issues: ProjectIssue[] }) => {
                 width: '100%',
                 display: 'flex',
                 gridGap: '1rem',
+                alignItems: 'center',
               }}
               className={classes.secondaryHeading}
             >

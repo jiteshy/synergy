@@ -6,6 +6,7 @@ import {
   ProjectDetails,
   Contributors,
   SynergyApi,
+  ProjectIssue,
 } from '@jiteshy/backstage-plugin-synergy-common';
 
 type TopicNode = {
@@ -91,6 +92,13 @@ type RepositoryIssue = {
   body: string;
   createdAt: string;
   updatedAt: string;
+  isPinned?: boolean;
+  repository?: {
+    name: string
+    primaryLanguage?: {
+      name: string;
+    }
+  };
 };
 
 type RepositoryIssues = {
@@ -114,6 +122,12 @@ type RepositoryDetails = Repository & {
 type ProjectsQueryResponse = {
   search: {
     nodes: Repository[];
+  };
+};
+
+type IssuesQueryResponse = {
+  search: {
+    nodes: RepositoryIssue[];
   };
 };
 
@@ -280,9 +294,51 @@ export async function githubProviderImpl({
       return {
         ...formatProject(repo, repoTag),
         readme: repo.readme.text,
-        issues: repo.issues.nodes,
-        pinnedIssues: repo.pinnedIssues.nodes.map(pinned => pinned.issue),
+        issues: repo.issues.nodes.map(convertToProjectIssue),
+        pinnedIssues: repo.pinnedIssues.nodes.map(pinned => pinned.issue).map(convertToProjectIssue),
       };
+    },
+    getIssues: async (): Promise<ProjectIssue[]> => {
+      const query = `
+        query {
+          search(type: ISSUE, query: "org:${org} label:${repoTag} archived:false", first: 100) {
+            nodes {
+              ... on Issue {
+                author {
+                  login
+                  url
+                }
+                body
+                createdAt
+                id
+                isPinned
+                repository {
+                  name
+                  primaryLanguage {
+                    name
+                  }
+                }
+                title
+                updatedAt
+                url
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }`;
+
+      const response: IssuesQueryResponse = await client(query);
+      
+      return response.search.nodes
+        .map(convertToProjectIssue)
+        .sort((p1: ProjectIssue, p2: ProjectIssue) => {
+          return (
+            new Date(p2.updatedAt).getTime() - new Date(p1.updatedAt).getTime()
+          );
+        });
     },
   };
 }
@@ -332,4 +388,12 @@ function parseContributors(repo: Repository) {
     {},
   );
   return contributors;
+}
+
+function convertToProjectIssue(issue: RepositoryIssue) {
+  return {
+    ...issue,
+    repository: issue.repository?.name,
+    primaryLanguage: issue.repository?.primaryLanguage?.name
+  } 
 }
