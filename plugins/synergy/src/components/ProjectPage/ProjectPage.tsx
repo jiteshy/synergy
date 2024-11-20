@@ -2,6 +2,7 @@ import React from 'react';
 import { useSynergyApi } from '../../hooks';
 import {
   CardTab,
+  InfoCard,
   Link,
   MarkdownContent,
   Progress,
@@ -36,8 +37,11 @@ export const ProjectPage = () => {
 
   return (
     projectData && (
-      <Card>
-        <Box sx={{ m: '1rem' }}>
+      <InfoCard
+        title="Project Details"
+        subheader="Explore the project's open issues and start contributing."
+      >
+        <Box sx={{ mx: '.25rem', mb: '.25rem' }}>
           <Grid container spacing={2} justifyContent="flex-start">
             <Grid item xs={12}>
               <Box
@@ -48,15 +52,12 @@ export const ProjectPage = () => {
                 }}
               >
                 <div>
-                  <Link to="/synergy">
-                    Projects
-                  </Link>{' '}
-                  / <span>{projectData.name}</span>
+                  <Link to="/synergy">Projects</Link> /{' '}
+                  <span>{projectData.name}</span>
                 </div>
+
                 <div>
-                  <Link to="/synergy">
-                    Back to Projects
-                  </Link>
+                  <Link to="/synergy">Back to Projects</Link>
                 </div>
               </Box>
             </Grid>
@@ -86,7 +87,7 @@ export const ProjectPage = () => {
             </Grid>
           </Grid>
         </Box>
-      </Card>
+      </InfoCard>
     )
   );
 };

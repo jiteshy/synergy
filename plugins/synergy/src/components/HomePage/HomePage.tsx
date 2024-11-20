@@ -7,6 +7,7 @@ import EqualizerIcon from '@material-ui/icons/Equalizer';
 import PublishIcon from '@material-ui/icons/Publish';
 import { Projects } from '../Projects';
 import { Issues } from '../Issues';
+import { UserIssues } from '../UserIssues';
 
 const useStyles = makeStyles<Theme>(() => ({
   container: {
@@ -40,7 +41,7 @@ export const HomePage = () => {
           icon={<PublishIcon fontSize="medium" />}
           style={tabStyles}
         >
-          <div>Some content 2</div>
+          <UserIssues />
         </CardTab>
         <CardTab
           label="Leaderboard"

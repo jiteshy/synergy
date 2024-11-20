@@ -10,6 +10,7 @@ import { ProjectCard } from '../ProjectCard';
 import { Box, Grid } from '@material-ui/core';
 import { Dropdown } from '../UI';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import { InfoBanner } from '../InfoBanner';
 
 export const Projects = () => {
   const {
@@ -65,15 +66,19 @@ export const Projects = () => {
   return (
     <Grid container>
       <Grid item xs={12} md={8} lg={10}>
-        <div>
-          <p>
-            Explore the inner-source projects in your organization, contribute,
-            and climb the leaderboard!
-          </p>
-        </div>
+        <InfoBanner
+          title="Explore inner-source projects, contribute, and rise on the leaderboard"
+          subtitle="Below projects are currently accepting contributions."
+        />
       </Grid>
       <Grid item xs={12} md={4} lg={2}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gridGap: '8px', marginTop: '-14px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gridGap: '8px',
+          }}
+        >
           <FilterListIcon fontSize="medium" style={{ marginTop: '20px' }} />
           <Dropdown
             label="Category"

@@ -15,7 +15,7 @@ export const Dropdown = ({
   handleSelect,
 }: DropdownComponentProps) => {
   return (
-    <FormControl size='medium' fullWidth={true}>
+    <FormControl size="medium" fullWidth={true}>
       <InputLabel>{label}</InputLabel>
       <Select
         value={current}

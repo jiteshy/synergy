@@ -27,8 +27,8 @@ type RepositoryLanguages = {
   nodes: LanguageNode[];
 };
 
-type RepositoryIssuesCount = {
-  totalCount: number;
+type RepositoryIssuesState = {
+  state: string;
 };
 
 type RepositoryOwner = {
@@ -71,7 +71,9 @@ type Repository = {
   languages: RepositoryLanguages;
   repositoryTopics: RepositoryTopics;
   stargazerCount: number;
-  issues: RepositoryIssuesCount;
+  issues: {
+    nodes: RepositoryIssuesState[];
+  };
   pullRequests: RepositoryPullRequest;
 };
 
@@ -84,6 +86,10 @@ type RepositoryIssueAuthor = {
   url: string;
 };
 
+type RepositoryIssueLabelNode = {
+  name: string;
+};
+
 type RepositoryIssue = {
   id: string;
   url: string;
@@ -93,12 +99,19 @@ type RepositoryIssue = {
   createdAt: string;
   updatedAt: string;
   isPinned?: boolean;
+  labels?: {
+    nodes: RepositoryIssueLabelNode[];
+  };
   repository?: {
-    name: string
+    name: string;
     primaryLanguage?: {
       name: string;
-    }
+    };
+    repositoryTopics?: {
+      nodes: TopicNode[];
+    };
   };
+  state: string;
 };
 
 type RepositoryIssues = {
@@ -106,8 +119,8 @@ type RepositoryIssues = {
 };
 
 type RepositoryPinnedIssue = {
-  issue: RepositoryIssue
-}
+  issue: RepositoryIssue;
+};
 
 type RepositoryPinnedIssues = {
   nodes: RepositoryPinnedIssue[];
@@ -212,8 +225,10 @@ export async function githubProviderImpl({
             nodes {
               ... on Repository {
                 ${GITHUB_REPO_QUERY_BASE_FIELDS}
-                issues {
-                  totalCount
+                issues (states: OPEN, first: 100) {
+                  nodes {
+                    state
+                  }
                 }
               }
             }
@@ -225,7 +240,7 @@ export async function githubProviderImpl({
         }`;
 
       const response: ProjectsQueryResponse = await client(query);
-      
+
       return response.search.nodes
         .map((repo: Repository) => formatProject(repo, repoTag))
         .sort((p1: Project, p2: Project) => {
@@ -242,7 +257,7 @@ export async function githubProviderImpl({
         query repository($name: String!, $owner: String!) {
           repository(name: $name, owner: $owner) {
             ${GITHUB_REPO_QUERY_BASE_FIELDS}
-            issues (first: 100, orderBy: {field: UPDATED_AT, direction: DESC}) {
+            issues (states: OPEN, first: 100, orderBy: {field: UPDATED_AT, direction: DESC}) {
               nodes {
                 ... on Issue {
                   id
@@ -254,6 +269,7 @@ export async function githubProviderImpl({
                   title
                   body
                   createdAt
+                  state
                   updatedAt
                 }
               }
@@ -272,6 +288,7 @@ export async function githubProviderImpl({
                     title
                     body
                     createdAt
+                    state
                     updatedAt
                   }
                 }
@@ -295,13 +312,16 @@ export async function githubProviderImpl({
         ...formatProject(repo, repoTag),
         readme: repo.readme.text,
         issues: repo.issues.nodes.map(convertToProjectIssue),
-        pinnedIssues: repo.pinnedIssues.nodes.map(pinned => pinned.issue).map(convertToProjectIssue),
+        pinnedIssues: repo.pinnedIssues.nodes
+          .map(pinned => pinned.issue)
+          .filter(keepOpenOnly)
+          .map(convertToProjectIssue),
       };
     },
     getIssues: async (): Promise<ProjectIssue[]> => {
       const query = `
         query {
-          search(type: ISSUE, query: "org:${org} label:${repoTag} archived:false", first: 100) {
+          search(type: ISSUE, query: "org:${org} state:open label:${repoTag} archived:false", first: 100) {
             nodes {
               ... on Issue {
                 author {
@@ -318,6 +338,7 @@ export async function githubProviderImpl({
                     name
                   }
                 }
+                state
                 title
                 updatedAt
                 url
@@ -331,7 +352,7 @@ export async function githubProviderImpl({
         }`;
 
       const response: IssuesQueryResponse = await client(query);
-      
+
       return response.search.nodes
         .map(convertToProjectIssue)
         .sort((p1: ProjectIssue, p2: ProjectIssue) => {
@@ -339,6 +360,65 @@ export async function githubProviderImpl({
             new Date(p2.updatedAt).getTime() - new Date(p1.updatedAt).getTime()
           );
         });
+    },
+    getMyIssues: async (): Promise<ProjectIssue[]> => {
+      const query = `
+        query {
+          search(type: ISSUE, query: "org:${org} is:issue assignee:@me", first: 100) {
+            nodes {
+              ... on Issue {
+                author {
+                  login
+                  url
+                }
+                body
+                createdAt
+                id
+                isPinned
+                labels (first: 50) {
+                  nodes {
+                    name
+                  }
+                }
+                repository {
+                  name
+                  repositoryTopics (first: 50) {
+                    nodes {
+                      topic {
+                        name
+                      }
+                    }
+                  }
+                  primaryLanguage {
+                    name
+                  }
+                }
+                state
+                title
+                updatedAt
+                url
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }`;
+
+      const response: IssuesQueryResponse = await client(query);
+
+      return (
+        response.search.nodes
+          // .filter(keepInnerSourceOnly)
+          .map(convertToProjectIssue)
+          .sort((p1: ProjectIssue, p2: ProjectIssue) => {
+            return (
+              new Date(p2.updatedAt).getTime() -
+              new Date(p1.updatedAt).getTime()
+            );
+          })
+      );
     },
   };
 }
@@ -365,7 +445,7 @@ function formatProject(repo: Repository, repoTag: string): Project {
     ),
     topics: topics,
     starsCount: repo.stargazerCount,
-    issuesCount: repo.issues.totalCount,
+    issuesCount: repo.issues.nodes.length,
     contributionsCount: repo.pullRequests.totalCount,
     contributors: parseContributors(repo),
   };
@@ -390,10 +470,27 @@ function parseContributors(repo: Repository) {
   return contributors;
 }
 
+function keepOpenOnly(issue: RepositoryIssue) {
+  return issue.state === 'OPEN';
+}
+
+function keepInnerSourceOnly(issue: RepositoryIssue) {
+  issue.labels?.nodes.forEach((node: RepositoryIssueLabelNode) => {
+    if (node.name.toLowerCase() === 'inner-source') return true;
+  });
+
+  issue.repository?.repositoryTopics?.nodes.forEach((node: TopicNode) => {
+    if (node.topic.name.toLowerCase() === 'inner-source') return true;
+  });
+
+  return false;
+}
+
 function convertToProjectIssue(issue: RepositoryIssue) {
   return {
     ...issue,
+    isOpen: issue.state.toLowerCase() === 'open',
     repository: issue.repository?.name,
-    primaryLanguage: issue.repository?.primaryLanguage?.name
-  } 
+    primaryLanguage: issue.repository?.primaryLanguage?.name,
+  };
 }

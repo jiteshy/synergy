@@ -22,10 +22,6 @@ const useStyles = makeStyles<Theme>(theme => ({
     fontSize: theme.typography.pxToRem(12),
     color: theme.palette.text.secondary,
   },
-  infoHeader: {},
-  primary: {
-    color: theme.palette.primary.main,
-  },
   link: {
     textDecoration: 'underline',
     color: theme.palette.primary.main,
@@ -39,12 +35,12 @@ const useStyles = makeStyles<Theme>(theme => ({
     paddingLeft: '4px',
   },
   accordionSummary: {
-    backgroundColor: theme.palette.grey['100'],
+    backgroundColor: theme.palette.infoBackground,
     boxShadow: 'none',
   },
   accordionDetails: {
     backgroundColor: theme.palette.secondary.contrastText,
-    marginTop: '0.5rem'
+    marginTop: '0.5rem',
   },
 }));
 
@@ -107,7 +103,7 @@ export const IssuesList = ({ issues }: { issues: ProjectIssue[] }) => {
                 variant="contained"
                 title="Go to GitHub"
               >
-                Contribute{' '}
+                {issue.isOpen ? 'Contribute' : 'Open on GitHub'}
                 <OpenInNewIcon
                   fontSize="small"
                   className={classes.navigateIcon}

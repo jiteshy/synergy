@@ -5,7 +5,7 @@ import {
   Content,
   ContentHeader,
   SupportButton,
-	ErrorPage,
+  ErrorPage,
 } from '@backstage/core-components';
 import { Route } from 'react-router-dom';
 import { projectRouteRef } from '../../routes';
@@ -27,9 +27,12 @@ export const SynergyPage = () => (
         </SupportButton>
       </ContentHeader>
       <FlatRoutes>
-				<Route index element={<HomePage />} />
-				<Route path={projectRouteRef.path} element={<ProjectPage />} />
-				<Route path="*" element={<ErrorPage statusMessage='Page Not Found' />} />
+        <Route index element={<HomePage />} />
+        <Route path={projectRouteRef.path} element={<ProjectPage />} />
+        <Route
+          path="*"
+          element={<ErrorPage statusMessage="Page Not Found" />}
+        />
       </FlatRoutes>
     </Content>
   </Page>

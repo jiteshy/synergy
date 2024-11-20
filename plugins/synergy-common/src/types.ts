@@ -40,11 +40,12 @@ export type ProjectIssue = {
   isPinned?: boolean;
   repository?: string;
   primaryLanguage?: string;
+  isOpen: boolean;
 };
 
 export type ProjectPinnedIssue = {
-  issue: ProjectIssue
-}
+  issue: ProjectIssue;
+};
 
 export type ProjectDetails = Project & {
   readme: string;
@@ -55,5 +56,6 @@ export type ProjectDetails = Project & {
 export interface SynergyApi {
   getProjects(): Promise<Project[]>;
   getProject(name: string, owner: string): Promise<ProjectDetails>;
-  getIssues(): Promise<ProjectIssue[]>
+  getIssues(): Promise<ProjectIssue[]>;
+  getMyIssues(): Promise<ProjectIssue[]>;
 }

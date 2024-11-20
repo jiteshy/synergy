@@ -16,17 +16,13 @@ export const synergyPlugin = createBackendPlugin({
       deps: {
         httpRouter: coreServices.httpRouter,
         logger: coreServices.logger,
-        config: coreServices.rootConfig
+        config: coreServices.rootConfig,
       },
-      async init({
-        httpRouter,
-        logger,
-        config
-      }) {
+      async init({ httpRouter, logger, config }) {
         httpRouter.use(
           await createRouter({
             logger,
-            config
+            config,
           }),
         );
         httpRouter.addAuthPolicy({

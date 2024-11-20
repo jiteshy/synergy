@@ -35,6 +35,11 @@ export class SynergyClient implements SynergyApi {
     return this.get<ProjectIssue[]>(urlSegment);
   }
 
+  getMyIssues(): Promise<ProjectIssue[]> {
+    const urlSegment = 'myissues';
+    return this.get<ProjectIssue[]>(urlSegment);
+  }
+
   private async get<T>(path: string, params?: KeyValue): Promise<T> {
     const baseUrl = `${await this.discoveryApi.getBaseUrl('synergy')}/`;
     const url = new URL(path, baseUrl);

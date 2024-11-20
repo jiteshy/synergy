@@ -10,6 +10,7 @@ import { Box, Grid } from '@material-ui/core';
 import { Dropdown } from '../UI';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { IssuesList } from '../IssuesList';
+import { InfoBanner } from '../InfoBanner';
 
 export const Issues = () => {
   const {
@@ -39,8 +40,8 @@ export const Issues = () => {
       });
       setIssues(issues);
       setPinnedIssues(pinnedIssues);
-			setFilteredIssues(issues);
-			setFilteredPinnedIssues(pinnedIssues);
+      setFilteredIssues(issues);
+      setFilteredPinnedIssues(pinnedIssues);
     }
   }, [issuesList]);
 
@@ -87,17 +88,10 @@ export const Issues = () => {
   return (
     <Grid container>
       <Grid item xs={12} md={8} lg={10}>
-        <div>
-          <p>
-            Explore the inner-source issues in your organization, contribute,
-            and climb the leaderboard!
-          </p>
-          <p>
-            Issues below aren’t limited to inner-source projects—any project can
-            request contributions from the inner-source community by labeling
-            their issues as "inner-source".
-          </p>
-        </div>
+        <InfoBanner
+          title="Explore inner-source issues, contribute, and rise on the leaderboard"
+          subtitle="Issues below aren’t limited to inner-source projects—any project can request contributions from the inner-source community."
+        />
       </Grid>
       <Grid item xs={12} md={4} lg={2}>
         <Box sx={{ display: 'flex', alignItems: 'center', gridGap: '8px' }}>
