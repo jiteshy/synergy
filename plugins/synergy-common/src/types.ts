@@ -24,15 +24,16 @@ export type Project = {
   updatedAt: string;
 };
 
-export type ProjectIssueAuthor = {
+export type Author = {
   login: string;
-  url: string;
+  url?: string;
+  avatarUrl?: string;
 };
 
 export type ProjectIssue = {
   id: string;
   url: string;
-  author: ProjectIssueAuthor;
+  author: Author;
   title: string;
   body: string;
   createdAt: string;
@@ -51,6 +52,11 @@ export type ProjectDetails = Project & {
   readme: string;
   issues: ProjectIssue[];
   pinnedIssues: ProjectIssue[];
+  contributingGuidelines?: string;
+};
+
+export type ProjectContributor = Author & {
+  contributionsCount: number;
 };
 
 export interface SynergyApi {
@@ -58,4 +64,5 @@ export interface SynergyApi {
   getProject(name: string, owner: string): Promise<ProjectDetails>;
   getIssues(): Promise<ProjectIssue[]>;
   getMyIssues(): Promise<ProjectIssue[]>;
+  getContributions(): Promise<ProjectContributor[]>;
 }

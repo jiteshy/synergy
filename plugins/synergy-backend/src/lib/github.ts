@@ -7,6 +7,7 @@ import {
   Contributors,
   SynergyApi,
   ProjectIssue,
+  ProjectContributor,
 } from '@jiteshy/backstage-plugin-synergy-common';
 
 type TopicNode = {
@@ -39,13 +40,15 @@ type RepositoryBranchRef = {
   name: string;
 };
 
-type RepositoryPullRequestAuthor = {
+type Author = {
   login: string;
+  url?: string;
+  avatarUrl?: string;
 };
 
 type RepositoryPullRequestNode = {
-  author: RepositoryPullRequestAuthor;
-  baseRef: RepositoryBranchRef;
+  author: Author;
+  baseRef?: RepositoryBranchRef;
 };
 
 type RepositoryPullRequest = {
@@ -81,11 +84,6 @@ type RepositoryReadme = {
   text: string;
 };
 
-type RepositoryIssueAuthor = {
-  login: string;
-  url: string;
-};
-
 type RepositoryIssueLabelNode = {
   name: string;
 };
@@ -93,7 +91,7 @@ type RepositoryIssueLabelNode = {
 type RepositoryIssue = {
   id: string;
   url: string;
-  author: RepositoryIssueAuthor;
+  author: Author;
   title: string;
   body: string;
   createdAt: string;
@@ -130,6 +128,16 @@ type RepositoryDetails = Repository & {
   readme: RepositoryReadme;
   issues: RepositoryIssues;
   pinnedIssues: RepositoryPinnedIssues;
+  contributingGuidelines?: {
+    body: string;
+  };
+};
+
+type RepositoryDetailsWithPRs = {
+  name: string;
+  pullRequests: {
+    nodes: RepositoryPullRequestNode[];
+  };
 };
 
 type ProjectsQueryResponse = {
@@ -141,6 +149,12 @@ type ProjectsQueryResponse = {
 type IssuesQueryResponse = {
   search: {
     nodes: RepositoryIssue[];
+  };
+};
+
+type PRQueryResponse = {
+  search: {
+    nodes: RepositoryDetailsWithPRs[];
   };
 };
 
@@ -298,6 +312,9 @@ export async function githubProviderImpl({
               ... on Blob {
                 text
               }
+            }
+            contributingGuidelines {
+              body
             }     
           } 
         }`;
@@ -311,6 +328,7 @@ export async function githubProviderImpl({
       return {
         ...formatProject(repo, repoTag),
         readme: repo.readme.text,
+        contributingGuidelines: repo.contributingGuidelines?.body,
         issues: repo.issues.nodes.map(convertToProjectIssue),
         pinnedIssues: repo.pinnedIssues.nodes
           .map(pinned => pinned.issue)
@@ -408,16 +426,50 @@ export async function githubProviderImpl({
 
       const response: IssuesQueryResponse = await client(query);
 
-      return (
-        response.search.nodes
-          .filter(keepInnerSourceOnly)
-          .map(convertToProjectIssue)
-          .sort((p1: ProjectIssue, p2: ProjectIssue) => {
-            return (
-              new Date(p2.updatedAt).getTime() -
-              new Date(p1.updatedAt).getTime()
-            );
-          })
+      return response.search.nodes
+        .filter(keepInnerSourceOnly)
+        .map(convertToProjectIssue)
+        .sort((p1: ProjectIssue, p2: ProjectIssue) => {
+          return (
+            new Date(p2.updatedAt).getTime() - new Date(p1.updatedAt).getTime()
+          );
+        });
+    },
+    getContributions: async (): Promise<ProjectContributor[]> => {
+      const query = `
+        query {
+          search(type: REPOSITORY, query: "org:${org} topic:${repoTag} fork:true archived:false", first: 100) {
+            nodes {
+              ... on Repository {
+                name
+                pullRequests (states: MERGED, first: 100) {
+                  nodes {
+                    author {
+                      url
+                      login
+                      avatarUrl
+                    }
+                  }
+                }
+              }
+            }
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+          }
+        }`;
+
+      const response: PRQueryResponse = await client(query);
+
+      const contributors: ProjectContributor[] = convertToProjectContributors(
+        response.search.nodes,
+      );
+
+      return contributors.sort(
+        (p1: ProjectContributor, p2: ProjectContributor) => {
+          return p2.contributionsCount - p1.contributionsCount;
+        },
       );
     },
   };
@@ -451,10 +503,10 @@ function formatProject(repo: Repository, repoTag: string): Project {
   };
 }
 
-function parseContributors(repo: Repository) {
+function parseContributors(repo: Repository): Contributors {
   const pullRequests = repo.pullRequests.nodes.filter(
     (prNode: RepositoryPullRequestNode) =>
-      prNode.baseRef.name === repo.defaultBranchRef.name,
+      prNode.baseRef?.name === repo.defaultBranchRef.name,
   );
   const contributors = pullRequests.reduce(
     (contributors: Contributors, prNode: RepositoryPullRequestNode) => {
@@ -470,11 +522,11 @@ function parseContributors(repo: Repository) {
   return contributors;
 }
 
-function keepOpenOnly(issue: RepositoryIssue) {
+function keepOpenOnly(issue: RepositoryIssue): boolean {
   return issue.state === 'OPEN';
 }
 
-function keepInnerSourceOnly(issue: RepositoryIssue) {
+function keepInnerSourceOnly(issue: RepositoryIssue): boolean {
   if (issue.labels) {
     for (const node of issue.labels.nodes) {
       if (node.name.toLowerCase() === 'inner-source') return true;
@@ -490,11 +542,37 @@ function keepInnerSourceOnly(issue: RepositoryIssue) {
   return false;
 }
 
-function convertToProjectIssue(issue: RepositoryIssue) {
+function convertToProjectIssue(issue: RepositoryIssue): ProjectIssue {
   return {
     ...issue,
     isOpen: issue.state.toLowerCase() === 'open',
     repository: issue.repository?.name,
     primaryLanguage: issue.repository?.primaryLanguage?.name,
   };
+}
+
+function convertToProjectContributors(
+  repositories: RepositoryDetailsWithPRs[],
+): ProjectContributor[] {
+  const authorContributions: { [login: string]: ProjectContributor } = {};
+
+  repositories.forEach(repo => {
+    const pullRequests = repo.pullRequests.nodes;
+
+    pullRequests.forEach(pr => {
+      const author = pr.author;
+      const authorLogin = author.login;
+
+      if (authorContributions[authorLogin]) {
+        authorContributions[authorLogin].contributionsCount++;
+      } else {
+        authorContributions[authorLogin] = {
+          ...author,
+          contributionsCount: 1,
+        };
+      }
+    });
+  });
+
+  return Object.values(authorContributions);
 }

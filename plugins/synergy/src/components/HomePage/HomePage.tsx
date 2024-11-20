@@ -3,13 +3,14 @@ import { CardTab, TabbedCard } from '@backstage/core-components';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import BugReportIcon from '@material-ui/icons/BugReport';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
-import PublishIcon from '@material-ui/icons/Publish';
+import CategoryIcon from '@material-ui/icons/Category';
 import { Projects } from '../Projects';
 import { Issues } from '../Issues';
 import { UserIssues } from '../UserIssues';
+import { Contributions } from '../Contributions';
 
 export const HomePage = () => {
-  const tabStyles = { fontSize: '16px', width: '100%', marginTop: '16px' };
+  const tabStyles = { fontSize: '16px', padding: '1rem 1.5rem' };
 
   return (
     <TabbedCard>
@@ -29,7 +30,7 @@ export const HomePage = () => {
       </CardTab>
       <CardTab
         label="My Contributions"
-        icon={<PublishIcon fontSize="medium" />}
+        icon={<CategoryIcon fontSize="medium" />}
         style={tabStyles}
       >
         <UserIssues />
@@ -39,7 +40,7 @@ export const HomePage = () => {
         icon={<EqualizerIcon fontSize="medium" />}
         style={tabStyles}
       >
-        <div>Some content 2</div>
+        <Contributions />
       </CardTab>
     </TabbedCard>
   );

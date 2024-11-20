@@ -79,7 +79,7 @@ export const Projects = () => {
             gridGap: '8px',
             justifySelf: 'right',
             width: '200px',
-            marginTop: '-10px'
+            marginTop: '-10px',
           }}
         >
           <FilterListIcon fontSize="medium" style={{ marginTop: '20px' }} />

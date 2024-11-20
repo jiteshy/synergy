@@ -3,6 +3,7 @@ import { ResponseError } from '@backstage/errors';
 import {
   KeyValue,
   Project,
+  ProjectContributor,
   ProjectDetails,
   ProjectIssue,
   SynergyApi,
@@ -38,6 +39,11 @@ export class SynergyClient implements SynergyApi {
   getMyIssues(): Promise<ProjectIssue[]> {
     const urlSegment = 'myissues';
     return this.get<ProjectIssue[]>(urlSegment);
+  }
+
+  getContributions(): Promise<ProjectContributor[]> {
+    const urlSegment = 'contributions';
+    return this.get<ProjectContributor[]>(urlSegment);
   }
 
   private async get<T>(path: string, params?: KeyValue): Promise<T> {

@@ -18,9 +18,9 @@ import { IssuesList } from '../IssuesList';
 export const ProjectPage = () => {
   const tabStyles = {
     fontSize: '14px',
-    width: '8rem',
-    marginTop: '14px',
-    paddingBottom: '13px',
+    // marginTop: '14px',
+    padding: '18px 8px 13px ',
+    whiteSpace: 'nowrap',
   };
   const { owner, project } = useRouteRefParams(projectRouteRef);
   const {
@@ -80,8 +80,25 @@ export const ProjectPage = () => {
                     'No Open Issues found for this project.'
                   )}
                 </CardTab>
-                <CardTab label="README" style={tabStyles}>
-                  <MarkdownContent content={projectData.readme} dialect="gfm" />
+                <CardTab label="Readme" style={tabStyles}>
+                  {projectData.readme ? (
+                    <MarkdownContent
+                      content={projectData.readme}
+                      dialect="gfm"
+                    />
+                  ) : (
+                    <p>README file not found.</p>
+                  )}
+                </CardTab>
+                <CardTab label="Contributing Guidelines" style={tabStyles}>
+                  {projectData.contributingGuidelines ? (
+                    <MarkdownContent
+                      content={projectData.contributingGuidelines}
+                      dialect="gfm"
+                    />
+                  ) : (
+                    <p>No contribution guideline found.</p>
+                  )}
                 </CardTab>
               </TabbedCard>
             </Grid>

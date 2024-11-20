@@ -8,6 +8,7 @@ import { Config } from '@backstage/config';
 import { DataProviderConfig, readConfig } from '../lib/configReader';
 import {
   Project,
+  ProjectContributor,
   ProjectDetails,
   ProjectIssue,
   SynergyApi,
@@ -80,6 +81,12 @@ export async function createRouter(
   router.get('/myissues', async (_, response) => {
     logger.info(`Fetching user's issues from ${provider}`);
     const issues: ProjectIssue[] = await providerImpl.getMyIssues();
+    response.json(issues);
+  });
+
+  router.get('/contributions', async (_, response) => {
+    logger.info(`Fetching user's contributions from ${provider}`);
+    const issues: ProjectContributor[] = await providerImpl.getContributions();
     response.json(issues);
   });
 
