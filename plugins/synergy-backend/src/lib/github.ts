@@ -410,7 +410,7 @@ export async function githubProviderImpl({
 
       return (
         response.search.nodes
-          // .filter(keepInnerSourceOnly)
+          .filter(keepInnerSourceOnly)
           .map(convertToProjectIssue)
           .sort((p1: ProjectIssue, p2: ProjectIssue) => {
             return (
@@ -475,13 +475,17 @@ function keepOpenOnly(issue: RepositoryIssue) {
 }
 
 function keepInnerSourceOnly(issue: RepositoryIssue) {
-  issue.labels?.nodes.forEach((node: RepositoryIssueLabelNode) => {
-    if (node.name.toLowerCase() === 'inner-source') return true;
-  });
+  if (issue.labels) {
+    for (const node of issue.labels.nodes) {
+      if (node.name.toLowerCase() === 'inner-source') return true;
+    }
+  }
 
-  issue.repository?.repositoryTopics?.nodes.forEach((node: TopicNode) => {
-    if (node.topic.name.toLowerCase() === 'inner-source') return true;
-  });
+  if (issue.repository?.repositoryTopics) {
+    for (const node of issue.repository.repositoryTopics.nodes) {
+      if (node.topic.name.toLowerCase() === 'inner-source') return true;
+    }
+  }
 
   return false;
 }
