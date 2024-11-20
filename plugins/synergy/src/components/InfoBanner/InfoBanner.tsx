@@ -3,9 +3,9 @@ import { Box, makeStyles, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles<Theme>(theme => ({
   wrapper: {
-    // backgroundColor: theme.palette.infoBackground,
+    backgroundColor: theme.palette.grey[100],
     color: theme.palette.infoText,
-    // padding: '0.5rem 0rem 0.15rem'
+    padding: '0.5rem 1rem 0.15rem',
   },
 }));
 

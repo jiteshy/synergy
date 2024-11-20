@@ -35,7 +35,7 @@ const useStyles = makeStyles<Theme>(theme => ({
     paddingLeft: '4px',
   },
   accordionSummary: {
-    backgroundColor: theme.palette.infoBackground,
+    backgroundColor: theme.palette.grey[100],
     boxShadow: 'none',
   },
   accordionDetails: {

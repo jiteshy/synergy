@@ -87,14 +87,23 @@ export const Issues = () => {
 
   return (
     <Grid container>
-      <Grid item xs={12} md={8} lg={10}>
+      <Grid item xs={12}>
         <InfoBanner
           title="Explore inner-source issues, contribute, and rise on the leaderboard"
           subtitle="Issues below aren’t limited to inner-source projects—any project can request contributions from the inner-source community."
         />
       </Grid>
-      <Grid item xs={12} md={4} lg={2}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gridGap: '8px' }}>
+      <Grid item xs={12}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gridGap: '8px',
+            justifySelf: 'right',
+            width: '200px',
+            marginTop: '-10px',
+          }}
+        >
           <FilterListIcon fontSize="medium" style={{ marginTop: '20px' }} />
           <Dropdown
             label="Category"

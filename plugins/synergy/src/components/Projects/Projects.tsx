@@ -65,18 +65,21 @@ export const Projects = () => {
 
   return (
     <Grid container>
-      <Grid item xs={12} md={8} lg={10}>
+      <Grid item xs={12}>
         <InfoBanner
           title="Explore inner-source projects, contribute, and rise on the leaderboard"
           subtitle="Below projects are currently accepting contributions."
         />
       </Grid>
-      <Grid item xs={12} md={4} lg={2}>
+      <Grid item xs={12}>
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
             gridGap: '8px',
+            justifySelf: 'right',
+            width: '200px',
+            marginTop: '-10px'
           }}
         >
           <FilterListIcon fontSize="medium" style={{ marginTop: '20px' }} />
