@@ -8,6 +8,7 @@ import {
   SynergyApi,
   ProjectIssue,
   ProjectContributor,
+  ProjectStats,
 } from '@jiteshy/backstage-plugin-synergy-common';
 
 type TopicNode = {
@@ -139,6 +140,29 @@ type RepositoryDetailsWithPRs = {
     nodes: RepositoryPullRequestNode[];
   };
 };
+
+type RepositoryIssuesStats = {
+  name: string;
+  openIssues: {
+    totalCount: number;
+  },
+  closedIssues: {
+    totalCount: number;
+  },
+  pinnedIssues: {
+    totalCount: number;
+  }
+}
+
+type RepositoryStatsQueryResponse = {
+  repos: {
+    repositoryCount: number,
+    nodes: RepositoryIssuesStats[]
+  },
+  issues: {
+    issueCount: number;
+  }
+}
 
 type ProjectsQueryResponse = {
   search: {
@@ -471,6 +495,41 @@ export async function githubProviderImpl({
           return p2.contributionsCount - p1.contributionsCount;
         },
       );
+    },
+    getStats: async (): Promise<ProjectStats> => {
+      const query = `
+        query {
+          repos: search(type: REPOSITORY, query: "org:${org} topic:${repoTag} fork:true archived:false", first: 100) {
+            repositoryCount
+            nodes {
+              ...on Repository{
+                name
+                openIssues: issues (states: OPEN) {
+                  totalCount
+                }  
+                closedIssues: issues (states: CLOSED) {
+                  totalCount
+                }
+                pinnedIssues {
+                  totalCount
+                }
+              }
+            }
+          }
+          issues: search(type: ISSUE, query: "org:${org} label:${repoTag} archived:false", first: 100) {
+            issueCount
+          }
+        }`;
+
+      const response: RepositoryStatsQueryResponse = await client(query);
+
+      return {
+        projectsCount: response.repos.repositoryCount,
+        openIssuesCount: response.repos.nodes.reduce((total, currentRepo) => total + currentRepo.openIssues.totalCount, 0),
+        closedIssuesCount: response.repos.nodes.reduce((total, currentRepo) => total + currentRepo.closedIssues.totalCount, 0),
+        pinnedIssuesCount: response.repos.nodes.reduce((total, currentRepo) => total + currentRepo.pinnedIssues.totalCount, 0),
+        standaloneIssuesCount: response.issues.issueCount
+      }
     },
   };
 }

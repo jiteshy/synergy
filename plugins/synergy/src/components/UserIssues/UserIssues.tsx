@@ -6,7 +6,7 @@ import {
 } from '@backstage/core-components';
 import { ProjectIssue } from '@jiteshy/backstage-plugin-synergy-common';
 import { useSynergyApi } from '../../hooks';
-import { Box, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import { IssuesList } from '../IssuesList';
 import { InfoBanner } from '../InfoBanner';
 

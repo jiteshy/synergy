@@ -36,7 +36,7 @@ export const HomePage = () => {
         <UserIssues />
       </CardTab>
       <CardTab
-        label="Leaderboard"
+        label="Stats & Leaderboard"
         icon={<EqualizerIcon fontSize="medium" />}
         style={tabStyles}
       >

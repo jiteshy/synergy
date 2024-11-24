@@ -11,6 +11,7 @@ import {
   ProjectContributor,
   ProjectDetails,
   ProjectIssue,
+  ProjectStats,
   SynergyApi,
 } from '@jiteshy/backstage-plugin-synergy-common';
 
@@ -87,6 +88,12 @@ export async function createRouter(
   router.get('/contributions', async (_, response) => {
     logger.info(`Fetching user's contributions from ${provider}`);
     const issues: ProjectContributor[] = await providerImpl.getContributions();
+    response.json(issues);
+  });
+
+  router.get('/stats', async (_, response) => {
+    logger.info(`Fetching inner source stats from ${provider}`);
+    const issues: ProjectStats = await providerImpl.getStats();
     response.json(issues);
   });
 

@@ -59,10 +59,19 @@ export type ProjectContributor = Author & {
   contributionsCount: number;
 };
 
+export type ProjectStats = {
+  projectsCount: number;
+  openIssuesCount: number;
+  closedIssuesCount: number;
+  pinnedIssuesCount: number;
+  standaloneIssuesCount: number;
+}
+
 export interface SynergyApi {
   getProjects(): Promise<Project[]>;
   getProject(name: string, owner: string): Promise<ProjectDetails>;
   getIssues(): Promise<ProjectIssue[]>;
   getMyIssues(): Promise<ProjectIssue[]>;
   getContributions(): Promise<ProjectContributor[]>;
+  getStats(): Promise<ProjectStats>;
 }

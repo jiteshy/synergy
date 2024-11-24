@@ -4,6 +4,7 @@ import {
   CardTab,
   InfoCard,
   Link,
+  LinkButton,
   MarkdownContent,
   Progress,
   ResponseErrorPanel,
@@ -56,9 +57,7 @@ export const ProjectPage = () => {
                   <span>{projectData.name}</span>
                 </div>
 
-                <div>
-                  <Link to="/synergy">Back to Projects</Link>
-                </div>
+                <LinkButton to="/synergy" variant='contained'>Back to All Projects</LinkButton>
               </Box>
             </Grid>
             <Grid item xs={12} md={6} lg={5}>

@@ -6,6 +6,7 @@ import {
   ProjectContributor,
   ProjectDetails,
   ProjectIssue,
+  ProjectStats,
   SynergyApi,
 } from '@jiteshy/backstage-plugin-synergy-common';
 
@@ -44,6 +45,11 @@ export class SynergyClient implements SynergyApi {
   getContributions(): Promise<ProjectContributor[]> {
     const urlSegment = 'contributions';
     return this.get<ProjectContributor[]>(urlSegment);
+  }
+
+  getStats(): Promise<ProjectStats> {
+    const urlSegment = 'stats';
+    return this.get<ProjectStats>(urlSegment);
   }
 
   private async get<T>(path: string, params?: KeyValue): Promise<T> {
