@@ -89,7 +89,7 @@ export const Issues = () => {
     <Grid container>
       <Grid item xs={12}>
         <InfoBanner
-          title="Explore inner-source issues, contribute, and rise on the leaderboard"
+          title="Explore inner-source issues from projects in your org which are not exclusively inner-source"
           subtitle="Issues below aren’t limited to inner-source projects—any project can request contributions from the inner-source community."
         />
       </Grid>
