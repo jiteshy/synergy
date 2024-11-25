@@ -9,7 +9,7 @@ synergy:
       org: jiteshy-synergy
       host: https://github.com
       apiBaseUrl: https://api.github.com
-      token: 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
+      token: <GitHub_Token>
   repoTag: inner-source
 ```
 
@@ -39,4 +39,4 @@ The configuration values are:
 - repoTag
   - Type: string
   - Required: Yes
-  - Details: Topic or Label used Inner-Source projects or issues e.g. "inner-source"
+  - Details: Topic or Label used for Inner-Source projects or issues e.g. "inner-source"

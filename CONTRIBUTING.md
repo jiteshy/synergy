@@ -21,10 +21,13 @@ Pull Requests (PRs) are the main and exclusive way to contribute to the project.
 
 ### Create a fork
 
-[Fork][fork], then clone the repository:
+Fork and then clone the repository:
 
 ```sh
-git clone https://github.com/jiteshy/backstage-plugin-synergy.git
+git clone git@github.com:your_github_username/backstage-plugin-synergy.git
+cd backstage-plugin-synergy
+git remote add upstream https://github.com/jiteshy/backstage-plugin-synergy.git
+git fetch upstream
 ```
 
 ### Install dependencies
