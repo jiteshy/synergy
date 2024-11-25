@@ -59,10 +59,9 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,md}": [
+    "*.{json,md,css}": [
       "prettier --write"
-    ],
-    "*.{css,md}": "prettier --write"
+    ]
   },
   "packageManager": "yarn@4.5.3"
 }
