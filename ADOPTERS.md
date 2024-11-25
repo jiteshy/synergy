@@ -8,5 +8,5 @@ the community!_ 🙌
 _If your organization uses the Synergy plugin, we'd love to have you listed!
 Simply submit a Pull Request to add your organization name to the list below._
 
-| Organization                                               | Contact(s)                                                                                    | Description                                                                                               |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Organization | Contact(s) | Description |
+| ------------ | ---------- | ----------- |

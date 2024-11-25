@@ -22,12 +22,12 @@ export const Projects = () => {
   const [filteredProjects, setFilteredProjects] = useState<Project[]>();
   const [category, setCategory] = useState<string>('');
 
-  const prepareCategories = (projects?: Project[]) => {
-    if (!projects) return [];
+  const prepareCategories = (projectsList?: Project[]) => {
+    if (!projectsList) return [];
 
     const categories = new Set<string>();
 
-    projects.forEach((project: Project) => {
+    projectsList.forEach((project: Project) => {
       if (project.primaryLanguage) {
         categories.add(project.primaryLanguage);
       }
@@ -44,12 +44,12 @@ export const Projects = () => {
     if (projects) {
       const currentCategory = e.target.value as string;
       if (currentCategory) {
-        const filteredProjects = projects.filter(
+        const filteredProjectsList = projects.filter(
           (project: Project) =>
             project.topics.includes(currentCategory) ||
             project.primaryLanguage === currentCategory,
         );
-        setFilteredProjects(filteredProjects);
+        setFilteredProjects(filteredProjectsList);
       } else {
         setFilteredProjects(projects);
       }

@@ -10,7 +10,7 @@ import {
   ResponseErrorPanel,
   TabbedCard,
 } from '@backstage/core-components';
-import { Box, Card, Grid } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { ProjectCard } from '../ProjectCard';
 import { useRouteRefParams } from '@backstage/core-plugin-api';
 import { projectRouteRef } from '../../routes';
@@ -57,11 +57,13 @@ export const ProjectPage = () => {
                   <span>{projectData.name}</span>
                 </div>
 
-                <LinkButton to="/synergy" variant='contained'>Back to All Projects</LinkButton>
+                <LinkButton to="/synergy" variant="contained">
+                  Back to All Projects
+                </LinkButton>
               </Box>
             </Grid>
             <Grid item xs={12} md={6} lg={5}>
-              <ProjectCard project={projectData} hideMore={true} />
+              <ProjectCard project={projectData} hideMore />
             </Grid>
             <Grid item md={6} lg={7}>
               <TabbedCard>

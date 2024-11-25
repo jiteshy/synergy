@@ -9,7 +9,7 @@ Backstage.io plugin for **Inner-Source** dashboard. This plugin is both frontend
 - Browse all the Inner-Source projects
 - View details of an Inner-Source project including Pinned Issues, Open Issues, Readme & Contributing guidelines.
 - Browse all the Inner-Source issues which are created in other projects (not exclusively Inner-Source).
-- View details of an issue 
+- View details of an issue
 - Check their own contributions so far
 - Check the Inner-Source stats and leaderboard
 
@@ -19,7 +19,7 @@ See more information from our [documentation](./docs/index.md).
 
 Find [installation instructions](./docs/index.md#installation) in our documentation.
 
-**IMPORTANT**: This plugin only works with the new backend system. If you are still 
+**IMPORTANT**: This plugin only works with the new backend system. If you are still
 using the old backend system, please migrate to the new backend system first.
 
 ## Examples

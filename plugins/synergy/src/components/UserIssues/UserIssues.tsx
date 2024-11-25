@@ -22,17 +22,17 @@ export const UserIssues = () => {
 
   useEffect(() => {
     if (issuesList) {
-      const openIssues: ProjectIssue[] = [];
-      const closedIssues: ProjectIssue[] = [];
+      const open: ProjectIssue[] = [];
+      const closed: ProjectIssue[] = [];
       issuesList.forEach((issue: ProjectIssue) => {
         if (issue.isOpen) {
-          openIssues.push(issue);
+          open.push(issue);
         } else {
-          closedIssues.push(issue);
+          closed.push(issue);
         }
       });
-      setOpenIssues(openIssues);
-      setClosedIssues(closedIssues);
+      setOpenIssues(open);
+      setClosedIssues(closed);
     }
   }, [issuesList]);
 

@@ -9,25 +9,25 @@ import { Box, Grid, makeStyles, Theme } from '@material-ui/core';
 import { InfoBanner } from '../InfoBanner';
 import { ProjectContributor } from '@jiteshy/backstage-plugin-synergy-common';
 
-const useStyles = makeStyles<Theme>((theme) => ({
-	row: {
-		display: 'flex',
+const useStyles = makeStyles<Theme>(theme => ({
+  row: {
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-		padding: '0.5rem',
-		paddingBottom: '0.5rem',
-		borderBottom: '1px solid',
-		borderBottomColor: theme.palette.border,
-		fontSize: '1.25rem'
-	},
-	card: {
-		backgroundColor: theme.palette.background.default
-	}
+    padding: '0.5rem',
+    paddingBottom: '0.5rem',
+    borderBottom: '1px solid',
+    borderBottomColor: theme.palette.border,
+    fontSize: '1.25rem',
+  },
+  card: {
+    backgroundColor: theme.palette.background.default,
+  },
 }));
 
 export const Contributions = () => {
-	const classes = useStyles();
+  const classes = useStyles();
   const {
     value: contributors,
     loading: contributorsLoading,
@@ -57,34 +57,46 @@ export const Contributions = () => {
         />
       </Grid>
       <Grid item xs={12} md={6}>
-        <InfoCard className={classes.card}
+        <InfoCard
+          className={classes.card}
           title="Inner-Source Stats"
           subheader="Inner-Source projects and issues statistics."
         >
           <Box className={classes.row}>
-						<div title="Total no of inner-source projects in your org">Inner-Source projects</div>
-						<div>{stats?.projectsCount}</div>
-					</Box>
+            <div title="Total no of inner-source projects in your org">
+              Inner-Source projects
+            </div>
+            <div>{stats?.projectsCount}</div>
+          </Box>
           <Box className={classes.row}>
-						<div title="Total no of pinned issues in inner-source projects">Priority (pinned) issues</div>
-						<div>{stats?.pinnedIssuesCount}</div>
-					</Box>
+            <div title="Total no of pinned issues in inner-source projects">
+              Priority (pinned) issues
+            </div>
+            <div>{stats?.pinnedIssuesCount}</div>
+          </Box>
           <Box className={classes.row}>
-						<div title="Total no of open issues in inner-source projects">Open issues</div>
-						<div>{stats?.openIssuesCount}</div>
-					</Box>
+            <div title="Total no of open issues in inner-source projects">
+              Open issues
+            </div>
+            <div>{stats?.openIssuesCount}</div>
+          </Box>
           <Box className={classes.row}>
-						<div title="Total no of closed issues so far in inner-source projects">Closed issues</div>
-						<div>{stats?.closedIssuesCount}</div>
-					</Box>
+            <div title="Total no of closed issues so far in inner-source projects">
+              Closed issues
+            </div>
+            <div>{stats?.closedIssuesCount}</div>
+          </Box>
           <Box className={classes.row}>
-						<div title="Total no of inner-source issues in projects which are not exclusively inner-source">Issues not part of inner-source projects</div>
-						<div>{stats?.standaloneIssuesCount}</div>
-					</Box>
+            <div title="Total no of inner-source issues in projects which are not exclusively inner-source">
+              Issues not part of inner-source projects
+            </div>
+            <div>{stats?.standaloneIssuesCount}</div>
+          </Box>
         </InfoCard>
       </Grid>
       <Grid item xs={12} md={6}>
-        <InfoCard className={classes.card}
+        <InfoCard
+          className={classes.card}
           title="Top Contributors"
           subheader="Inner-Source contributors rankings."
         >

@@ -15,10 +15,7 @@ import { FlatRoutes } from '@backstage/core-app-api';
 
 export const SynergyPage = () => (
   <Page themeId="tool">
-    <Header
-      title="Welcome to Synergy!"
-      subtitle="Our Inner Source Hub"
-    ></Header>
+    <Header title="Welcome to Synergy!" subtitle="Our Inner Source Hub" />
     <Content>
       <ContentHeader title="Inner-Source Projects & Issues">
         <SupportButton>

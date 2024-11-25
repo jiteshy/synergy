@@ -145,24 +145,24 @@ type RepositoryIssuesStats = {
   name: string;
   openIssues: {
     totalCount: number;
-  },
+  };
   closedIssues: {
     totalCount: number;
-  },
+  };
   pinnedIssues: {
     totalCount: number;
-  }
-}
+  };
+};
 
 type RepositoryStatsQueryResponse = {
   repos: {
-    repositoryCount: number,
-    nodes: RepositoryIssuesStats[]
-  },
+    repositoryCount: number;
+    nodes: RepositoryIssuesStats[];
+  };
   issues: {
     issueCount: number;
-  }
-}
+  };
+};
 
 type ProjectsQueryResponse = {
   search: {
@@ -525,11 +525,20 @@ export async function githubProviderImpl({
 
       return {
         projectsCount: response.repos.repositoryCount,
-        openIssuesCount: response.repos.nodes.reduce((total, currentRepo) => total + currentRepo.openIssues.totalCount, 0),
-        closedIssuesCount: response.repos.nodes.reduce((total, currentRepo) => total + currentRepo.closedIssues.totalCount, 0),
-        pinnedIssuesCount: response.repos.nodes.reduce((total, currentRepo) => total + currentRepo.pinnedIssues.totalCount, 0),
-        standaloneIssuesCount: response.issues.issueCount
-      }
+        openIssuesCount: response.repos.nodes.reduce(
+          (total, currentRepo) => total + currentRepo.openIssues.totalCount,
+          0,
+        ),
+        closedIssuesCount: response.repos.nodes.reduce(
+          (total, currentRepo) => total + currentRepo.closedIssues.totalCount,
+          0,
+        ),
+        pinnedIssuesCount: response.repos.nodes.reduce(
+          (total, currentRepo) => total + currentRepo.pinnedIssues.totalCount,
+          0,
+        ),
+        standaloneIssuesCount: response.issues.issueCount,
+      };
     },
   };
 }
@@ -568,13 +577,13 @@ function parseContributors(repo: Repository): Contributors {
       prNode.baseRef?.name === repo.defaultBranchRef.name,
   );
   const contributors = pullRequests.reduce(
-    (contributors: Contributors, prNode: RepositoryPullRequestNode) => {
+    (contributorsObj: Contributors, prNode: RepositoryPullRequestNode) => {
       const author = prNode.author.login;
-      if (!contributors[author]) {
-        contributors[author] = 0;
+      if (!contributorsObj[author]) {
+        contributorsObj[author] = 0;
       }
-      contributors[author]++;
-      return contributors;
+      contributorsObj[author]++;
+      return contributorsObj;
     },
     {},
   );

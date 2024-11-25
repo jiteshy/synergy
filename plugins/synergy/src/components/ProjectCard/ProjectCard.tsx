@@ -19,14 +19,14 @@ const useStyles = makeStyles<Theme>(theme => ({
       'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;',
     transition: '0.3s',
     color: theme.palette.grey[400],
-    backgroundColor: theme.palette.background.default
+    backgroundColor: theme.palette.background.default,
   },
   header: {
     display: 'flex',
     padding: '15px',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottom: '1px solid ' + theme.palette.border,
+    borderBottom: `1px solid ${theme.palette.border}`,
     color: theme.palette.grey[700],
   },
   title: {
@@ -68,7 +68,7 @@ const useStyles = makeStyles<Theme>(theme => ({
     paddingTop: '15px',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderTop: '1px solid ' + theme.palette.border,
+    borderTop: `1px solid ${theme.palette.border}`,
   },
   footerIcon: {
     display: 'flex',

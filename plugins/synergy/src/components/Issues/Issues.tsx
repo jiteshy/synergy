@@ -29,28 +29,28 @@ export const Issues = () => {
 
   useEffect(() => {
     if (issuesList) {
-      const issues: ProjectIssue[] = [];
-      const pinnedIssues: ProjectIssue[] = [];
+      const open: ProjectIssue[] = [];
+      const pinned: ProjectIssue[] = [];
       issuesList.forEach((issue: ProjectIssue) => {
         if (issue.isPinned) {
-          pinnedIssues.push(issue);
+          pinned.push(issue);
         } else {
-          issues.push(issue);
+          open.push(issue);
         }
       });
-      setIssues(issues);
-      setPinnedIssues(pinnedIssues);
-      setFilteredIssues(issues);
-      setFilteredPinnedIssues(pinnedIssues);
+      setIssues(open);
+      setPinnedIssues(pinned);
+      setFilteredIssues(open);
+      setFilteredPinnedIssues(pinned);
     }
   }, [issuesList]);
 
-  const prepareCategories = (issues?: ProjectIssue[]) => {
-    if (!issues) return [];
+  const prepareCategories = (projectsIssues?: ProjectIssue[]) => {
+    if (!projectsIssues) return [];
 
     const categories = new Set<string>();
 
-    issues.forEach((issue: ProjectIssue) => {
+    projectsIssues.forEach((issue: ProjectIssue) => {
       if (issue.primaryLanguage) {
         categories.add(issue.primaryLanguage);
       }
@@ -63,14 +63,14 @@ export const Issues = () => {
     if (issuesList) {
       const currentCategory = e.target.value as string;
       if (currentCategory) {
-        const filteredIssues = issues.filter(
+        const filteredOpen = issues.filter(
           (issue: ProjectIssue) => issue.primaryLanguage === currentCategory,
         );
-        const filteredPinnedIssues = pinnedIssues.filter(
+        const filteredPinned = pinnedIssues.filter(
           (issue: ProjectIssue) => issue.primaryLanguage === currentCategory,
         );
-        setFilteredIssues(filteredIssues);
-        setFilteredPinnedIssues(filteredPinnedIssues);
+        setFilteredIssues(filteredOpen);
+        setFilteredPinnedIssues(filteredPinned);
       } else {
         setFilteredIssues(issues);
         setFilteredPinnedIssues(pinnedIssues);

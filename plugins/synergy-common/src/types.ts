@@ -65,7 +65,7 @@ export type ProjectStats = {
   closedIssuesCount: number;
   pinnedIssuesCount: number;
   standaloneIssuesCount: number;
-}
+};
 
 export interface SynergyApi {
   getProjects(): Promise<Project[]>;

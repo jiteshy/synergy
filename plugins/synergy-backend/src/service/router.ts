@@ -1,10 +1,11 @@
-import { errorHandler } from '@backstage/backend-common';
-import { LoggerService } from '@backstage/backend-plugin-api';
 import express from 'express';
 import Router from 'express-promise-router';
+import {
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import { Request } from 'express';
 import { githubProviderImpl } from '../lib/github';
-import { Config } from '@backstage/config';
 import { DataProviderConfig, readConfig } from '../lib/configReader';
 import {
   Project,
@@ -14,10 +15,11 @@ import {
   ProjectStats,
   SynergyApi,
 } from '@jiteshy/backstage-plugin-synergy-common';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 
 export interface RouterOptions {
   logger: LoggerService;
-  config: Config;
+  config: RootConfigService;
 }
 
 type ProjectReq = {
@@ -37,7 +39,7 @@ export async function createRouter(
   if (provider.toLowerCase() === 'github') {
     providerImpl = await githubProviderImpl(providerConfig);
   } else {
-    throw `Provider implementation not found for: ${provider}`;
+    throw new Error(`Provider implementation not found for: ${provider}`);
   }
 
   const router = Router();
@@ -97,6 +99,6 @@ export async function createRouter(
     response.json(issues);
   });
 
-  router.use(errorHandler());
+  router.use(MiddlewareFactory.create({ config, logger }).error());
   return router;
 }
