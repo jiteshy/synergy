@@ -4,11 +4,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [1.1.1](https://github.com/jiteshy/backstage-plugin-synergy/compare/v1.1.0...v1.1.1) (2024-11-25)
 
-
 ### Bug Fixes
 
-* added missing tsc script in plugins ([97ba25a](https://github.com/jiteshy/backstage-plugin-synergy/commit/97ba25a5c31701a7d0af8bebb35e55210c54683e))
-* pre-commit hook fix ([#2](https://github.com/jiteshy/backstage-plugin-synergy/issues/2)) ([30e6ad7](https://github.com/jiteshy/backstage-plugin-synergy/commit/30e6ad75d3bb70a13679c86bd336a595dd5e6469))
+- added missing tsc script in plugins ([97ba25a](https://github.com/jiteshy/backstage-plugin-synergy/commit/97ba25a5c31701a7d0af8bebb35e55210c54683e))
+- pre-commit hook fix ([#2](https://github.com/jiteshy/backstage-plugin-synergy/issues/2)) ([30e6ad7](https://github.com/jiteshy/backstage-plugin-synergy/commit/30e6ad75d3bb70a13679c86bd336a595dd5e6469))
 
 ## 1.1.0 (2024-11-25)
 
