@@ -62,6 +62,10 @@ All contributions are very welcome. See [CONTRIBUTING](CONTRIBUTING.md) for more
 
 If your organization uses this plugin, we'd love to have you listed in our [ADOPTERS](ADOPTERS.md) list! ❤️
 
+## Attribution
+
+This plugin's CI/CD pipelines, documentation & guideline styles are inspired by the amazing [Backstage.io plugin for Q&A](https://github.com/drodil/backstage-plugin-qeta) written by [Heikki Hellgren](https://github.com/drodil). 🙏
+
 ## License
 
 This library is under the [MIT](LICENSE) license.
