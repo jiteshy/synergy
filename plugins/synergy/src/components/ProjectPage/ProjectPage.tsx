@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useSynergyApi } from '../../hooks';
 import {
   CardTab,
@@ -12,17 +12,48 @@ import {
 } from '@backstage/core-components';
 import { Box, Grid } from '@material-ui/core';
 import { ProjectCard } from '../ProjectCard';
-import { useRouteRefParams } from '@backstage/core-plugin-api';
+import {
+  configApiRef,
+  useApi,
+  useRouteRefParams,
+} from '@backstage/core-plugin-api';
 import { projectRouteRef } from '../../routes';
 import { IssuesList } from '../IssuesList';
+import { ProjectIssue } from '@jiteshy/backstage-plugin-synergy-common';
+import { TabContent } from '../../utils';
+
+type TabsContentProps = {
+  content?: string;
+  message: string;
+};
+
+type IssuesTabsContentProps = {
+  issues?: ProjectIssue[];
+  message: string;
+};
+
+const IssuesComponent = ({ issues, message }: IssuesTabsContentProps) => {
+  return issues?.length ? <IssuesList issues={issues} /> : <p>{message}</p>;
+};
+
+const MarkdownComponent = ({ content, message }: TabsContentProps) => {
+  return content ? (
+    <MarkdownContent content={content} dialect="gfm" />
+  ) : (
+    <p>{message}</p>
+  );
+};
 
 export const ProjectPage = () => {
   const tabStyles = {
     fontSize: '14px',
-    // marginTop: '14px',
     padding: '18px 8px 13px ',
     whiteSpace: 'nowrap',
   };
+  const config = useApi(configApiRef);
+  const hideIssues = config.getOptionalBoolean(
+    'synergy.provider.github.hideIssues',
+  );
   const { owner, project } = useRouteRefParams(projectRouteRef);
   const {
     value: projectData,
@@ -35,6 +66,54 @@ export const ProjectPage = () => {
   } else if (error) {
     return <ResponseErrorPanel error={error} />;
   }
+
+  const issueTabs: TabContent[] = [
+    {
+      label: 'Pinned Issues',
+      style: tabStyles,
+      children: (
+        <IssuesComponent
+          issues={projectData?.pinnedIssues}
+          message="No Pinned Issues found for this project."
+        />
+      ),
+    },
+    {
+      label: 'All Issues',
+      style: tabStyles,
+      children: (
+        <IssuesComponent
+          issues={projectData?.issues}
+          message="No Open Issues found for this project."
+        />
+      ),
+    },
+  ];
+
+  const otherTabs: TabContent[] = [
+    {
+      label: 'README',
+      style: tabStyles,
+      children: (
+        <MarkdownComponent
+          content={projectData?.readme}
+          message="README file not found."
+        />
+      ),
+    },
+    {
+      label: 'Contributing Guidelines',
+      style: tabStyles,
+      children: (
+        <MarkdownComponent
+          content={projectData?.contributingGuidelines}
+          message="No contribution guideline found."
+        />
+      ),
+    },
+  ];
+
+  const allTabs = (hideIssues ? [] : issueTabs).concat(otherTabs);
 
   return (
     projectData && (
@@ -67,40 +146,11 @@ export const ProjectPage = () => {
             </Grid>
             <Grid item md={6} lg={7}>
               <TabbedCard>
-                <CardTab label="Pinned Issues" style={tabStyles}>
-                  {projectData.pinnedIssues.length ? (
-                    <IssuesList issues={projectData.pinnedIssues} />
-                  ) : (
-                    'No Pinned Issues found for this project.'
-                  )}
-                </CardTab>
-                <CardTab label="All Issues" style={tabStyles}>
-                  {projectData.issues.length ? (
-                    <IssuesList issues={projectData.issues} />
-                  ) : (
-                    'No Open Issues found for this project.'
-                  )}
-                </CardTab>
-                <CardTab label="Readme" style={tabStyles}>
-                  {projectData.readme ? (
-                    <MarkdownContent
-                      content={projectData.readme}
-                      dialect="gfm"
-                    />
-                  ) : (
-                    <p>README file not found.</p>
-                  )}
-                </CardTab>
-                <CardTab label="Contributing Guidelines" style={tabStyles}>
-                  {projectData.contributingGuidelines ? (
-                    <MarkdownContent
-                      content={projectData.contributingGuidelines}
-                      dialect="gfm"
-                    />
-                  ) : (
-                    <p>No contribution guideline found.</p>
-                  )}
-                </CardTab>
+                {allTabs.map(tab => (
+                  <CardTab label={tab.label} style={tab.style}>
+                    {tab.children}
+                  </CardTab>
+                ))}
               </TabbedCard>
             </Grid>
           </Grid>

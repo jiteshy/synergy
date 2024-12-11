@@ -25,10 +25,6 @@ export const synergyPlugin = createBackendPlugin({
             config,
           }),
         );
-        httpRouter.addAuthPolicy({
-          path: '/',
-          allow: 'unauthenticated',
-        });
       },
     });
   },

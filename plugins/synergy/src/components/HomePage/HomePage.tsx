@@ -8,40 +8,53 @@ import { Projects } from '../Projects';
 import { Issues } from '../Issues';
 import { UserIssues } from '../UserIssues';
 import { Contributions } from '../Contributions';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { TabContent } from '../../utils';
 
 export const HomePage = () => {
   const tabStyles = { fontSize: '16px', padding: '1rem 1.5rem' };
+  const config = useApi(configApiRef);
+  const hideIssues = config.getOptionalBoolean(
+    'synergy.provider.github.hideIssues',
+  );
+
+  const issuesDependentTabs: TabContent[] = [
+    {
+      label: 'Issues',
+      style: tabStyles,
+      icon: <BugReportIcon fontSize="medium" />,
+      children: <Issues />,
+    },
+    {
+      label: 'My Contributions',
+      style: tabStyles,
+      icon: <CategoryIcon fontSize="medium" />,
+      children: <UserIssues />,
+    },
+    {
+      label: 'Stats & Leaderboard',
+      style: tabStyles,
+      icon: <EqualizerIcon fontSize="medium" />,
+      children: <Contributions />,
+    },
+  ];
+
+  const projectTab: TabContent = {
+    label: 'Projects',
+    style: tabStyles,
+    icon: <ListAltIcon fontSize="medium" />,
+    children: <Projects />,
+  };
+
+  const allTabs = [projectTab].concat(hideIssues ? [] : issuesDependentTabs);
 
   return (
     <TabbedCard>
-      <CardTab
-        label="Projects"
-        icon={<ListAltIcon fontSize="medium" />}
-        style={tabStyles}
-      >
-        <Projects />
-      </CardTab>
-      <CardTab
-        label="Issues"
-        icon={<BugReportIcon fontSize="medium" />}
-        style={tabStyles}
-      >
-        <Issues />
-      </CardTab>
-      <CardTab
-        label="My Contributions"
-        icon={<CategoryIcon fontSize="medium" />}
-        style={tabStyles}
-      >
-        <UserIssues />
-      </CardTab>
-      <CardTab
-        label="Stats & Leaderboard"
-        icon={<EqualizerIcon fontSize="medium" />}
-        style={tabStyles}
-      >
-        <Contributions />
-      </CardTab>
+      {allTabs.map(tab => (
+        <CardTab label={tab.label} style={tab.style} icon={tab.icon}>
+          {tab.children}
+        </CardTab>
+      ))}
     </TabbedCard>
   );
 };

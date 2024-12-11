@@ -10,6 +10,7 @@ synergy:
       host: https://github.com
       apiBaseUrl: https://api.github.com
       token: <GitHub_Token>
+      hideIssues: <Optional true/false. Refer details below.>
   repoTag: inner-source
 ```
 
@@ -36,6 +37,10 @@ The configuration values are:
   - Type: string
   - Required: Yes
   - Details: GitHub access token.
+- provider.github.hideIssues
+  - Type: boolean
+  - Required: No
+  - Details: Boolean indicating whether to hide the issues tab (e.g., when Issues not used in GitHub projects). Default is false. If true, only the project list and details (README & Contributing Guidelines) will be available, as other views depend on issues.
 - repoTag
   - Type: string
   - Required: Yes
