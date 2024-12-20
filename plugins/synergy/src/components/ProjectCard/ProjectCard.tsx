@@ -8,9 +8,9 @@ import BugReportIcon from '@material-ui/icons/BugReport';
 import CallMergeIcon from '@material-ui/icons/CallMerge';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { Project } from '@jiteshy/backstage-plugin-synergy-common';
-import { useRouteRef } from '@backstage/core-plugin-api';
+import { configApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import { projectRouteRef } from '../../routes';
-import { LinkButton } from '@backstage/core-components';
+import { Link, LinkButton } from '@backstage/core-components';
 
 const useStyles = makeStyles<Theme>(theme => ({
   card: {
@@ -92,6 +92,8 @@ export const ProjectCard = ({
 }) => {
   const styles = useStyles();
   const projectRoute = useRouteRef(projectRouteRef);
+  const config = useApi(configApiRef);
+  const catalogBasePath = config.getOptionalString('synergy.catalogBasePath');
 
   return (
     <Card className={styles.card}>
@@ -108,12 +110,11 @@ export const ProjectCard = ({
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Box className={styles.box}>
-              <div
-                className={styles.subtitle}
-                title="Primary language of the project"
-              >
-                <div>{project.primaryLanguage || 'Other'}</div>
+            <Box>
+              <div className={styles.subtitle}>
+                <div title="Primary language of the project">
+                  {project.primaryLanguage || 'Other'}
+                </div>
                 <a href={project.url} target="_blank" title="Go to GitHub repo">
                   <OpenInNewIcon fontSize="small" />
                 </a>
@@ -124,6 +125,17 @@ export const ProjectCard = ({
               <div className={styles.description}>
                 {project.description ?? 'No description'}
               </div>
+              <Box
+                sx={{
+                  py: 1,
+                }}
+              >
+                {catalogBasePath && (
+                  <Link to={`${catalogBasePath}/${project.name}`}>
+                    Go to Entity
+                  </Link>
+                )}
+              </Box>
               <div className={styles.topics}>
                 {project.topics.map((topic: string) => (
                   <Chip key={topic} label={topic} />
