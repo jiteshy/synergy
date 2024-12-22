@@ -39,7 +39,6 @@ const useStyles = makeStyles<Theme>(theme => ({
     boxShadow: 'none',
   },
   accordionDetails: {
-    backgroundColor: theme.palette.secondary.contrastText,
     marginTop: '0.5rem',
   },
 }));

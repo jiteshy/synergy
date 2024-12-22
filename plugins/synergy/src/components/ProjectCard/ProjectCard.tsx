@@ -18,7 +18,10 @@ const useStyles = makeStyles<Theme>(theme => ({
     boxShadow:
       'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;',
     transition: '0.3s',
-    color: theme.palette.grey[400],
+    color:
+      theme.palette.type === 'light'
+        ? theme.palette.grey[400]
+        : theme.palette.textSubtle,
     backgroundColor: theme.palette.background.default,
   },
   header: {
@@ -27,10 +30,16 @@ const useStyles = makeStyles<Theme>(theme => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottom: `1px solid ${theme.palette.border}`,
-    color: theme.palette.grey[700],
+    color:
+      theme.palette.type === 'light'
+        ? theme.palette.grey[700]
+        : theme.palette.textSubtle,
   },
   title: {
-    color: theme.palette.grey[900],
+    color:
+      theme.palette.type === 'light'
+        ? theme.palette.grey[900]
+        : theme.palette.text.primary,
     fontSize: '24px',
     fontWeight: 'bolder',
     margin: '0px 0px 0.72em',
@@ -43,7 +52,10 @@ const useStyles = makeStyles<Theme>(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    color: theme.palette.primary.light,
+    color:
+      theme.palette.type === 'light'
+        ? theme.palette.primary.light
+        : theme.palette.textSubtle,
     fontSize: '12px',
     marginBottom: '0.35em',
     lineHeight: '1.25rem',
@@ -51,7 +63,10 @@ const useStyles = makeStyles<Theme>(theme => ({
     fontWeight: 'bold',
   },
   description: {
-    color: theme.palette.grey[800],
+    color:
+      theme.palette.type === 'light'
+        ? theme.palette.grey[800]
+        : theme.palette.textSubtle,
     height: '60px',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -74,7 +89,10 @@ const useStyles = makeStyles<Theme>(theme => ({
     display: 'flex',
     alignItems: 'center',
     fontSize: '20px',
-    color: theme.palette.primary.light,
+    color:
+      theme.palette.type === 'light'
+        ? theme.palette.primary.light
+        : theme.palette.textSubtle,
   },
   footerCounts: {
     fontSize: '20px',

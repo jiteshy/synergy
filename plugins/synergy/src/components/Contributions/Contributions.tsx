@@ -19,7 +19,6 @@ const useStyles = makeStyles<Theme>(theme => ({
     paddingBottom: '0.5rem',
     borderBottom: '1px solid',
     borderBottomColor: theme.palette.border,
-    fontSize: '1.25rem',
   },
   card: {
     backgroundColor: theme.palette.background.default,
