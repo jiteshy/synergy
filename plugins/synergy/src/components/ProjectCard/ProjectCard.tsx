@@ -11,6 +11,7 @@ import { Project } from '@jiteshy/backstage-plugin-synergy-common';
 import { configApiRef, useApi, useRouteRef } from '@backstage/core-plugin-api';
 import { projectRouteRef } from '../../routes';
 import { Link, LinkButton } from '@backstage/core-components';
+import { useSynergyTranslation } from '../../hooks';
 
 const useStyles = makeStyles<Theme>(theme => ({
   card: {
@@ -108,6 +109,7 @@ export const ProjectCard = ({
   project: Project;
   hideMore?: boolean;
 }) => {
+  const { t } = useSynergyTranslation();
   const styles = useStyles();
   const projectRoute = useRouteRef(projectRouteRef);
   const config = useApi(configApiRef);
@@ -118,22 +120,32 @@ export const ProjectCard = ({
       <div className={styles.header}>
         <div>
           {project.isPrivate ? (
-            <LockIcon fontSize="small" titleAccess="Private Repository" />
+            <LockIcon
+              fontSize="small"
+              titleAccess={t('projectCard.hoverText.lock')}
+            />
           ) : (
-            <LockOpenIcon fontSize="small" titleAccess="Public Repository" />
+            <LockOpenIcon
+              fontSize="small"
+              titleAccess={t('projectCard.hoverText.unlock')}
+            />
           )}
         </div>
-        <div>{`Last update on ${project.updatedAt}`}</div>
+        <div>{`${t('projectCard.updatedAt')}${project.updatedAt}`}</div>
       </div>
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Box>
               <div className={styles.subtitle}>
-                <div title="Primary language of the project">
-                  {project.primaryLanguage || 'Other'}
+                <div title={t('projectCard.hoverText.language')}>
+                  {project.primaryLanguage || t('projectCard.otherLanguage')}
                 </div>
-                <a href={project.url} target="_blank" title="Go to GitHub repo">
+                <a
+                  href={project.url}
+                  target="_blank"
+                  title={t('projectCard.hoverText.githubIconLink')}
+                >
                   <OpenInNewIcon fontSize="small" />
                 </a>
               </div>
@@ -141,7 +153,7 @@ export const ProjectCard = ({
                 {project.name}
               </div>
               <div className={styles.description}>
-                {project.description ?? 'No description'}
+                {project.description ?? t('projectCard.noDescription')}
               </div>
               <Box
                 sx={{
@@ -150,7 +162,7 @@ export const ProjectCard = ({
               >
                 {catalogBasePath && (
                   <Link to={`${catalogBasePath}/${project.name}`}>
-                    Go to Entity
+                    {t('projectCard.entityLink')}
                   </Link>
                 )}
               </Box>
@@ -160,13 +172,19 @@ export const ProjectCard = ({
                 ))}
               </div>
               <div className={styles.footer}>
-                <div className={styles.footerIcon} title="Repository Stars">
+                <div
+                  className={styles.footerIcon}
+                  title={t('projectCard.hoverText.stars')}
+                >
                   <StarIcon />
                   <span className={styles.footerCounts}>
                     {project.starsCount}
                   </span>
                 </div>
-                <div className={styles.footerIcon} title="Open Issues">
+                <div
+                  className={styles.footerIcon}
+                  title={t('projectCard.hoverText.issues')}
+                >
                   <BugReportIcon />
                   <span className={styles.footerCounts}>
                     {project.issuesCount}
@@ -174,7 +192,7 @@ export const ProjectCard = ({
                 </div>
                 <div
                   className={styles.footerIcon}
-                  title="Overall Contributions so far"
+                  title={t('projectCard.hoverText.pr')}
                 >
                   <CallMergeIcon />
                   <span className={styles.footerCounts}>
@@ -190,7 +208,7 @@ export const ProjectCard = ({
                     color="primary"
                     variant="outlined"
                   >
-                    More
+                    {t('projectCard.moreLink')}
                   </LinkButton>
                 )}
               </div>
